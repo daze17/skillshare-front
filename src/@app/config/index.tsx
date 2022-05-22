@@ -1,6 +1,7 @@
 export const config = {
     BACKEND_URL: process.env.BACKEND_URL || 'http://localhost:3000/api/graphql',
     TOKEN_KEY: process.env.TOKEN_KEY || 'token',
+    ADMIN_TOKEN_KEY: process.env.ADMIN_TOKEN_KEY || 'admin_token',
     HOST: process.env.HOST || "0.0.0.0",
     PORT: process.env.PORT || 3000,
     APP_SECRET: process.env.APP_SECRET || "secret_password",

@@ -18,14 +18,12 @@ import {
   FiHome,
   FiTrendingUp,
   FiCompass,
-  FiStar,
-  FiSettings,
   FiMenu,
 } from "react-icons/fi";
 import { IconType } from "react-icons";
 import { ReactText } from "react";
+import Router, { useRouter }  from "next/router";
 import Routes from "@app/routes/routers";
-
 interface LinkItemProps {
   name: string;
   icon: IconType;
@@ -43,8 +41,6 @@ const LinkItems: Array<LinkItemProps> = [
     icon: FiTrendingUp,
     pathname: Routes.Admin.Authorlist.route,
   },
-  // { name: "Favourites", icon: FiStar },
-  // { name: "Settings", icon: FiSettings },
 ];
 
 const AdminSideBar = ({ children }: { children: ReactNode }) => {
@@ -107,6 +103,8 @@ interface NavItemProps extends FlexProps {
   pathname: string;
 }
 const NavItem = ({ icon, children, pathname, ...rest }: NavItemProps) => {
+  const router = useRouter();
+  const isCurrent = pathname === router.pathname
   return (
     <Link
       href={pathname || "#"}
@@ -124,6 +122,7 @@ const NavItem = ({ icon, children, pathname, ...rest }: NavItemProps) => {
           bg: "cyan.400",
           color: "white",
         }}
+        bg={isCurrent ?  "gray.200" : 'white'}
         {...rest}
       >
         {icon && (

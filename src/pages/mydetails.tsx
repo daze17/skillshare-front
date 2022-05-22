@@ -12,8 +12,9 @@ const MyDetails: NextPage = () => {
           <ListItem>
             <Heading>{user?.name}</Heading>
           </ListItem>
-          <ListItem>{user?.email}</ListItem>
-          <ListItem>member since {moment(user.createdAt).format("MMMM Do YYYY")}</ListItem>
+          <ListItem>email: {user?.email}</ListItem>
+          <ListItem>role: {user?.role}</ListItem>
+          <ListItem>member since: {moment(user.createdAt).format("MMMM Do YYYY")}</ListItem>
         </List>
       </Text>
     </Box>

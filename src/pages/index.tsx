@@ -1,24 +1,17 @@
-import PostCard from "@app/common/postCard";
 import type { NextPage } from "next";
-import {
-  Box,
-  Flex,
-  Heading,
-  Grid,
-  GridItem,
-  Text,
-  List,
-  ListItem,
-  Button,
-  Link,
-} from "@chakra-ui/react";
+import { Flex, Text, List, ListItem, Button, Link } from "@chakra-ui/react";
 import UserCard from "@app/common/postCard";
-import Head from "next/head";
-import Image from "next/image";
 import Routes from "@app/routes/routers";
 import { useRouter } from "next/router";
+import { useQuery } from "@apollo/client";
+import { POST_LIST } from "@app/utils/gql";
 
 const Home: NextPage = () => {
+  const { data: postFull } = useQuery(POST_LIST, {
+    variables: {
+      input: { approved: true },
+    },
+  });
   const Router = useRouter();
   return (
     <>
@@ -32,35 +25,25 @@ const Home: NextPage = () => {
             Add Post
           </Button>
         </Flex>
-        <Text>bas bus</Text>
       </Flex>
       <List>
-        <ListItem>
-          <Link
-            onClick={() =>
-              Router.push({
-                pathname: Routes.get(Routes.Main.PostDetail.route, {
-                  id: "item?.id",
-                }),
-              })
-            }
-          >
-            <UserCard />
-          </Link>
-        </ListItem>
-        <ListItem>
-          <Link
-            onClick={() =>
-              Router.push({
-                pathname: Routes.get(Routes.Main.PostDetail.route, {
-                  id: "item?.id",
-                }),
-              })
-            }
-          >
-            <UserCard />
-          </Link>
-        </ListItem>
+        {postFull?.postFullList.map((item: any) => {
+          return (
+            <ListItem key={item?.id}>
+              <Link
+                onClick={() =>
+                  Router.push({
+                    pathname: Routes.get(Routes.Main.PostDetail.route, {
+                      id: item?.id,
+                    }),
+                  })
+                }
+              >
+                <UserCard data={item} />
+              </Link>
+            </ListItem>
+          );
+        })}
       </List>
     </>
   );

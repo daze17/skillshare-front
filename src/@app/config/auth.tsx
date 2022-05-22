@@ -21,10 +21,18 @@ const redirect = (res: any, route: string) => {
 };
 
 const auth = async ({ ctx, route, req, res, apolloClient }: any) => {
+  const user_token = config.TOKEN_KEY;
+  const admin_token = config.ADMIN_TOKEN_KEY;
+  const { query } = ctx;
+
   const cookies = parseCookies({ req });
-  const token = config.TOKEN_KEY;
   let user = {};
-  const USER = process.browser ? Cookies.get(token) : cookies[token];
+  let admin = {};
+
+  const USER = process.browser ? Cookies.get(user_token) : cookies[user_token];
+  const ADMIN = process.browser
+    ? Cookies.get(admin_token)
+    : cookies[admin_token];
 
   const getUser = async (apolloClient: any) => {
     let response = {};
@@ -42,6 +50,9 @@ const auth = async ({ ctx, route, req, res, apolloClient }: any) => {
       if (route === "/login" || route === "/register") {
         redirect(res, Routes.Main.Home.route);
       }
+      if (Routes.isAdmin(route)) {
+        redirect(res, Routes.Main.Home.route);
+      }
       // get user information
       try {
         if (!process.browser) {
@@ -56,6 +67,26 @@ const auth = async ({ ctx, route, req, res, apolloClient }: any) => {
       return { user };
     } catch (Err) {
       console.log(Err);
+      return {};
+    }
+  }
+  if (ADMIN) {
+    try {
+      if (route === "/login" || route === "/register") {
+        redirect(res, Routes.Admin.Home.route);
+      }
+      try {
+        if (!process.browser) {
+          apolloClient = CreateApolloClient(ADMIN);
+        }
+        user = await getUser(apolloClient);
+      } catch (error) {
+        console.log("User error: ", error);
+        return {};
+      }
+      return { user };
+    } catch (error) {
+      console.log(error);
       return {};
     }
   }

@@ -25,24 +25,28 @@ const Login: NextPage = () => {
     fetchPolicy: "no-cache",
     onCompleted: async (data: any) => {
       try {
-        Cookies.set(
-          config.TOKEN_KEY,
-          data?.login?.accessToken,
-          {
+        if (data?.login?.userRole === "USER") {
+          Cookies.set(config.TOKEN_KEY, data?.login?.accessToken, {
             expires: 1,
             httpOnly: false,
             secure: false,
             path: "/",
-          }
-        );
-
+          });
+        } else if (data?.login?.userRole === "ADMIN") {
+          Cookies.set(config.ADMIN_TOKEN_KEY, data?.login?.accessToken, {
+            expires: 1,
+            httpOnly: false,
+            secure: false,
+            path: "/",
+          });
+        }
         await apolloClient.cache.reset();
         window.location.reload();
       } catch (error) {
         console.log(error);
       }
     },
-    onError: (error) => console.log(error, 'login failed'),
+    onError: (error) => console.log(error, "login failed"),
   });
 
   const onSubmit = (values: any) => {

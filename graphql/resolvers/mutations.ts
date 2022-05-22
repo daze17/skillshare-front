@@ -32,7 +32,6 @@ export const loginMutation = async (data: any) => {
         email,
       },
     });
-    console.log(user, "test");
     if (!user) throw new ApolloError("user not found");
     const passwordMatch = await bcrypt.compare(password, user?.password);
     console.log(!passwordMatch);
@@ -48,10 +47,31 @@ export const loginMutation = async (data: any) => {
         expiresIn: 7 * 24 * 60 * 60 * 1000,
       }
     );
-    console.log(accessToken);
-    return { accessToken };
+    const userRole = user?.role;
+    return { accessToken, userRole };
   } catch (error) {
     console.log(error);
     throw new ApolloError("system error");
   }
 };
+
+export const addPostMutation = async (data: any, context: any) => {
+  try {
+    const { user } = context;
+    const { title, tags, description } = data;
+    const post = await prisma.post.create({
+      data: {
+        title,
+        tags,
+        description,
+        User: { connect: { id: user.userId } },
+      },
+    });
+    console.log(post, "post");
+    return post;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+

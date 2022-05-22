@@ -14,6 +14,7 @@ export const typeDefs = gql`
   }
   type Login {
     accessToken: String
+    userRole: String
   }
   type User {
     id: String
@@ -21,16 +22,18 @@ export const typeDefs = gql`
     email: String
     createdAt: Date
     password: String
+    role: String
     posts: [Post]
   }
   type Post {
-    id: Int
+    id: String
     title: String
     tags: [String]
     approved: Boolean
     createdAt: Date
     updatedAt: Date
     description: String
+    User: User
   }
   input CommentsInput {
     questionId: Int
@@ -44,12 +47,22 @@ export const typeDefs = gql`
     email: String!
     password: String!
   }
+  input PostInput {
+    title: String
+    tags: [String]
+    description: String
+  }
+  input postListInput {
+    approved: Boolean!
+  }
   type Mutation {
     addUser(input: UserInput): Boolean
     login(input: LoginInput): Login
+    addPost(input: PostInput): Post
   }
   type Query {
     me: User
-    links(input: CommentsInput): [Link]!
+    authorList: [User]
+    postFullList(input: postListInput): [Post]
   }
 `;

@@ -14,8 +14,6 @@ import {
   Divider,
 } from "@chakra-ui/react";
 import PostCardUser from "@app/common/postCardUser";
-import Head from "next/head";
-import Image from "next/image";
 import Routes from "@app/routes/routers";
 import { useRouter } from "next/router";
 

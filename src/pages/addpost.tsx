@@ -1,62 +1,72 @@
 import type { NextPage } from "next";
-import React, { useEffect } from "react";
+import React from "react";
 import { useState } from "react";
 import {
   Flex,
-  Text,
   Button,
   Box,
-  List,
-  ListItem,
-  Link,
+  Input,
+  Tag,
+  TagCloseButton,
+  Heading,
 } from "@chakra-ui/react";
-import { ContentState, convertToRaw, EditorState, Modifier } from "draft-js";
-import { Editor } from "react-draft-wysiwyg";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
-import Routes from "@app/routes/routers";
-import Router from "next/router";
-
-import { Controller, useForm } from "react-hook-form";
 import WYSIWYGEditor from "@app/components/editor";
-import { stripHtml } from "string-strip-html";
-
-// type FormValues = {
-//   ReactDatepicker: string;
-// }
+import { Formik, Form } from "formik";
 
 const AddPost: NextPage = () => {
-  // const {
-  //   formState: { errors },
-  //   control,
-  // } = useForm();
-  const {
-    formState: { errors },
-    handleSubmit,
-    control,
-  }: any = useForm();
+  const [tags, setTags] = useState(["Educational", "New"]);
+  const [body, setBody] = useState("");
+
+  function handleKeyDown(e: any) {
+    if (e.key !== "Enter") return;
+    const value = e.target.value;
+    if (!value.trim()) return;
+    setTags([...tags, value]);
+    e.target.value = "";
+  }
+  const removeTag = (index: any) => {
+    setTags(tags.filter((el, i) => i !== index));
+  };
 
   return (
     <Box>
-      <form onSubmit={handleSubmit((data: any) => console.log(data))}>
-        <Controller
-          render={({ field }) => <WYSIWYGEditor {...field} />}
-          name="description"
-          control={control}
-          defaultValue=""
-          // rules={{
-          //   validate: {
-          //     required: (v) =>
-          //       (v && stripHtml(v).result.length > 0) ||
-          //       "Description is required",
-          //     maxLength: (v) =>
-          //       (v && stripHtml(v).result.length <= 2000) ||
-          //       "Maximum character limit is 2000",
-          //   },
-          // }}
-        />
-        <Button type="submit">send</Button>
-      </form>
-      {/* <WYSIWYGEditor/> */}
+      <Formik
+        initialValues={{
+          title: "",
+        }}
+        onSubmit={(data: any) => console.log(data, body, tags)}
+      >
+        {({ handleChange, handleBlur }: any) => (
+          <Form>
+            <Heading>Title</Heading>
+            <Input
+              placeholder="Title"
+              marginBottom={5}
+              onChange={handleChange}
+              id="title"
+            />
+            <WYSIWYGEditor onChange={handleChange} setBody={setBody} />
+            <Flex marginBottom={10}>
+              {tags.map((tag, index) => (
+                <div className="tag-item" key={index}>
+                  <Tag marginRight={2}>
+                    {tag} <TagCloseButton onClick={() => removeTag(index)} />
+                  </Tag>
+                </div>
+              ))}
+              <input
+                type="text"
+                placeholder="Type somthing"
+                onKeyDown={handleKeyDown}
+              />
+            </Flex>
+            <Button type="submit" colorScheme={"blue"}>
+              Send
+            </Button>
+          </Form>
+        )}
+      </Formik>
     </Box>
   );
 };

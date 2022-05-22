@@ -9,7 +9,11 @@ import {
   Td,
   TableCaption,
   TableContainer,
+  Spinner,
 } from "@chakra-ui/react";
+import { useQuery } from "@apollo/client";
+import { AUTHOR_LIST } from "@app/utils/gql";
+import moment from "moment";
 
 const userData = [
   {
@@ -47,41 +51,32 @@ const userData = [
 ];
 
 const AdminAuthorList: NextPage = () => {
+  const { data: _userList, loading }: any = useQuery(AUTHOR_LIST);
   return (
     <>
       <TableContainer>
         <Table variant="striped" colorScheme="twitter">
-          <TableCaption>Imperial to metric conversion factors</TableCaption>
           <Thead>
             <Tr>
               <Th>No</Th>
               <Th>Name</Th>
               <Th>Email</Th>
-              <Th isNumeric>Posts</Th>
-              <Th isNumeric>Followers</Th>
+              <Th>Role</Th>
               <Th>Created At</Th>
             </Tr>
           </Thead>
           <Tbody>
-            {userData.map((data: any, index: number) => (
-              <Tr key={data.userid}>
-                <Td>{index + 1}</Td>
-                <Td>{data.name}</Td>
-                <Td>{data.email}</Td>
-                <Td>{data.createdAt}</Td>
-                <Td>{data.followersCount}</Td>
-              </Tr>
-            ))}
+            {!loading &&
+              _userList?.authorList.map((data: any, index: number) => (
+                <Tr key={data.userid}>
+                  <Td>{index + 1}</Td>
+                  <Td>{data.name}</Td>
+                  <Td>{data.email}</Td>
+                  <Td>{data.role}</Td>
+                  <Td>{moment(data.createdAt).format("MMMM Do YYYY, h:mm:ss a")}</Td>
+                </Tr>
+              ))}
           </Tbody>
-          <Tfoot>
-            <Tr>
-              <Th>Name</Th>
-              <Th>Email</Th>
-              <Th>Created At</Th>
-              <Th isNumeric>Posts</Th>
-              <Th isNumeric>Followers</Th>
-            </Tr>
-          </Tfoot>
         </Table>
       </TableContainer>
     </>

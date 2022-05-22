@@ -72,28 +72,29 @@ MyApp.getInitialProps = async (context: any) => {
 };
 
 // export default MyApp;
-export default withApollo(
-  ({ initialState, headers: serverHeaders }): any => {
-    const httpLink = createHttpLink({
-      uri: config.BACKEND_URL,
-      credentials: "include",
-    });
-    const token = process.browser
-      ? cookie.parse(document.cookie || "")[config.TOKEN_KEY]
-      : cookie.parse(serverHeaders?.cookie || "")[config.TOKEN_KEY];
+export default withApollo(({ initialState, headers: serverHeaders }): any => {
+  const httpLink = createHttpLink({
+    uri: config.BACKEND_URL,
+    credentials: "include",
+  });
+  const userToken = process.browser
+    ? cookie.parse(document.cookie || "")[config.TOKEN_KEY]
+    : cookie.parse(serverHeaders?.cookie || "")[config.TOKEN_KEY];
+  const adminToken = process.browser
+    ? cookie.parse(document.cookie || "")[config.ADMIN_TOKEN_KEY]
+    : cookie.parse(serverHeaders?.cookie || "")[config.ADMIN_TOKEN_KEY];
 
-    const authLink = setContext((_, { headers }) => ({
-      headers: {
-        ...headers,
-        Authorization: token ? `Bearer ${token}` : "",
-      },
-    }));
-    const link: any = authLink.concat(httpLink);
-    return new ApolloClient({
-      link,
-      ssrMode: true,
-      cache: new InMemoryCache({
-      }).restore(initialState || {}),
-    });
-  }
-)(MyApp);
+  const token = userToken || adminToken;
+  const authLink = setContext((_, { headers }) => ({
+    headers: {
+      ...headers,
+      Authorization: token ? `Bearer ${token}` : "",
+    },
+  }));
+  const link: any = authLink.concat(httpLink);
+  return new ApolloClient({
+    link,
+    ssrMode: true,
+    cache: new InMemoryCache({}).restore(initialState || {}),
+  });
+})(MyApp);

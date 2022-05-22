@@ -10,7 +10,6 @@ import {
   useColorModeValue,
   useDisclosure,
   Image,
-  Input,
   Menu,
   MenuButton,
   Avatar,
@@ -23,7 +22,7 @@ import { useUserContext } from "@app/config/userProvider";
 import { useApolloClient } from "@apollo/react-hooks";
 import { config } from "@app/config";
 import Cookies from "js-cookie";
-import _ from "lodash"
+import _ from "lodash";
 import Router from "next/router";
 import Routes from "@app/routes/routers";
 
@@ -147,8 +146,23 @@ export default function Navbar() {
                     />
                   </MenuButton>
                   <MenuList>
-                    <MenuItem onClick={() => Router.push(Routes.User.Mydetail.route)}>User details</MenuItem>
-                    <MenuItem onClick={() => Router.push(Routes.User.PostList.route)}>My Posts</MenuItem>
+                    {user.role === "ADMIN" && (
+                      <MenuItem
+                        onClick={() => Router.push(Routes.Admin.Home.route)}
+                      >
+                        Admin Dashboard
+                      </MenuItem>
+                    )}
+                    <MenuItem
+                      onClick={() => Router.push(Routes.User.Mydetail.route)}
+                    >
+                      User details
+                    </MenuItem>
+                    <MenuItem
+                      onClick={() => Router.push(Routes.User.PostList.route)}
+                    >
+                      My Posts
+                    </MenuItem>
                     <MenuDivider />
                     <MenuItem onClick={logout}>Log Out</MenuItem>
                   </MenuList>
