@@ -16,6 +16,14 @@
     "incremental": true,
     "baseUrl": "./src/"
   },
+  // "build": {
+  //   "extraResources": [
+  //     {
+  //       "from": "node_modules/.prisma/client/",
+  //       "to": "app/node_modules/.prisma/client/"
+  //     }
+  //   ],
+  // },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
   "exclude": ["node_modules"]
 }
