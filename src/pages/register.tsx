@@ -13,33 +13,29 @@ import {
 import Routes from "@app/routes/routers";
 import Router from "next/router";
 import { Formik, Form } from "formik";
-import { useMutation } from "@apollo/react-hooks";
-import { gql } from "apollo-boost";
+import { useMutation } from "@apollo/client";
+import { REGISTER } from "@app/utils/gql";
 
 const Register: NextPage = () => {
   // Mutations
-//   const [registerMutation] = useMutation(gql`mutation 
-//   REGISTER($input: UserInput) {
-//     addUser(input: $input)
-//   }`, {
-//     fetchPolicy: "no-cache",
-//     onCompleted: async () => {
-//       Router.push(Routes.Additional.Login.route);
-//     },
-//     onError: (error) => console.log(error, 'error'),
-//   });
+  const [registerMutation] = useMutation(REGISTER, {
+    fetchPolicy: "no-cache",
+    onCompleted: async () => {
+      Router.push(Routes.Main.Login.route);
+    },
+    onError: (error) => console.log(error, 'error'),
+  });
 
   const onSubmit = (values: any) => {
-      console.log(values, 'values')
-    // registerMutation({
-    //   variables: {
-    //     input: {
-    //       email: values.email,
-    //       password: values.password,
-    //       name: values.name,
-    //     }
-    //   },
-    // });
+    registerMutation({
+      variables: {
+        input: {
+          email: values.email,
+          password: values.password,
+          name: values.name,
+        }
+      },
+    });
   };
   const formValidate = (values: any) => {
     const errors: any = {};
@@ -114,7 +110,7 @@ const Register: NextPage = () => {
           </Formik>
           <Text align="center">
             Already have an account? <Link color="blue" textDecor="underline" onClick={() =>
-              Router.push(Routes.Additional.Login.route)
+              Router.push(Routes.Main.Login.route)
             }>Log in</Link>
           </Text>
           <Text align="center">Are you an employer? <Link color="blue" textDecor="underline">Sign up on Talent</Link>  </Text>

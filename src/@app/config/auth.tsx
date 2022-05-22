@@ -2,10 +2,10 @@ import Routes from "@app/routes/routers";
 import Router from "next/router";
 import cookie from "cookie";
 import Cookies from "js-cookie";
-import config from "@app/config";
+import { config } from "@app/config";
 import { get } from "lodash";
 import { CreateApolloClient } from "@app/config/apollo";
-import { gql } from "apollo-boost";
+import { ME } from "@app/utils/gql";
 
 const parseCookies = ({ req }: any) => {
   return cookie.parse(req ? req.headers.cookie || "" : document.cookie || "");
@@ -30,19 +30,7 @@ const auth = async ({ ctx, route, req, res, apolloClient }: any) => {
     let response = {};
     response = await apolloClient.query({
       fetchPolicy: "no-cache",
-      query: gql`
-        query ME {
-          me {
-            id
-            name
-            email
-            questions {
-              id
-              title
-            }
-          }
-        }
-      `,
+      query: ME,
     });
     return get(response, "data.me");
   };
@@ -71,8 +59,8 @@ const auth = async ({ ctx, route, req, res, apolloClient }: any) => {
       return {};
     }
   }
-  if (route === "/questions/ask" || route === "/account") {
-    redirect(res, Routes.Additional.Login.route);
+  if (route === "/admin" || route === "/account") {
+    redirect(res, "/login");
   }
   return { user };
 };

@@ -1,8 +1,8 @@
 import _ from "lodash";
 
-// interface 
+// interface
 interface RouteProps {
-  [index: string]: RoutePropsItems
+  [index: string]: RoutePropsItems;
 }
 interface RoutePropsItems {
   route: string;
@@ -29,15 +29,19 @@ const AdminRoutes: RouteProps = {
     fallback: "/admin",
     title: "Pending list",
   },
-}
+};
 
 const UserRoutes: RouteProps = {
   Addpost: { route: "/addpost", fallback: "/", title: "Add Post" },
-}
+  Mydetail: { route: "/mydetails", fallback: "/", title: "My details" },
+  PostList: { route: "/mypostlist", fallback: "/", title: "My Posts" },
+};
 
 const MainRoutes: RouteProps = {
   Home: { route: "/", fallback: "/", title: "Home" },
   PostDetail: { route: "/post/[id]", fallback: "/", title: "Post Detail" },
+  Login: { route: "/login", fallback: "/", title: "Login" },
+  Register: { route: "/register", fallback: "/", title: "Register" },
 };
 
 const allRoutes = [AdminRoutes, MainRoutes, UserRoutes].reduce(
@@ -49,7 +53,7 @@ const Routes = {
   Main: MainRoutes,
   Admin: AdminRoutes,
   User: UserRoutes,
-  
+
   get: (route: string, params: any) => {
     let _route = route;
     if (params) {

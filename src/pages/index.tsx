@@ -34,9 +34,6 @@ const Home: NextPage = () => {
         </Flex>
         <Text>bas bus</Text>
       </Flex>
-      {/* <Input w={"200px"} placeholder={"Filter by user"} marginTop={"20px"} marginBottom={"20px"} /> */}
-      {/* <Grid h="200px" templateColumns="repeat(4, 1fr)" gap={"50px"}>
-          <GridItem> */}
       <List>
         <ListItem>
           <Link

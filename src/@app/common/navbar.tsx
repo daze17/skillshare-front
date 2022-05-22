@@ -11,16 +11,35 @@ import {
   useDisclosure,
   Image,
   Input,
+  Menu,
+  MenuButton,
+  Avatar,
+  MenuList,
+  MenuItem,
+  MenuDivider,
 } from "@chakra-ui/react";
 import { HamburgerIcon, CloseIcon } from "@chakra-ui/icons";
-import Router from "next/router";
-import { useApolloClient } from "@apollo/react-hooks";
 import { useUserContext } from "@app/config/userProvider";
-import config from "@app/config";
+import { useApolloClient } from "@apollo/react-hooks";
+import { config } from "@app/config";
+import Cookies from "js-cookie";
+import _ from "lodash"
+import Router from "next/router";
+import Routes from "@app/routes/routers";
+
 //   import Cookies from "js-cookie";
 
 export default function Navbar() {
   const { isOpen, onToggle } = useDisclosure();
+  const { user }: any = useUserContext();
+  const apolloClient = useApolloClient();
+
+  const logout = () => {
+    Cookies.remove(config.TOKEN_KEY);
+    apolloClient.cache.reset().then(() => {
+      setTimeout(() => window.location.reload(), 500);
+    });
+  };
 
   return (
     <Box>
@@ -65,13 +84,17 @@ export default function Navbar() {
             align={"center"}
           >
             <Button
-              onClick={() => Router.push("/")}
+              onClick={() => Router.push(Routes.Main.Home.route)}
               bg={"none"}
               _hover={{ bg: "none" }}
               _active={{ bg: "none" }}
               w={150}
             >
-              <Image src="https://miro.medium.com/max/968/1*F6SrJR7_s95r6oCF3ugMZw.png" w={150} alt="banner" />
+              <Image
+                src="https://miro.medium.com/max/968/1*F6SrJR7_s95r6oCF3ugMZw.png"
+                w={150}
+                alt="banner"
+              />
             </Button>
             <Flex display={{ base: "none", md: "flex" }} ml={10}>
               <DesktopNav />
@@ -83,43 +106,55 @@ export default function Navbar() {
             direction={"row"}
             spacing={6}
           >
-            {/* <Box w={500}>
-              <Input
-                placeholder="Search..."
-                size="md"
-                // color={"white"}
-                bg={"#fff"}
-              />
-            </Box> */}
-            {/*  </>} */}
-          <Button
-            display={{ base: "none", md: "inline-flex" }}
-            fontSize={"sm"}
-            fontWeight={600}
-            color={"#39739d"}
-            bg={"#e1ecf4"}
-            border={"1px solid #7aa7c7"}
-            onClick={() => Router.push('/login')}
-            _hover={{
-              bg: "#b3d3ea",
-            }}
-          >
-            Sign In
-          </Button>
-          <Button
-            display={{ base: "none", md: "inline-flex" }}
-            fontSize={"sm"}
-            fontWeight={600}
-            color={"#ffffff"}
-            bg={"#0a95ff"}
-            border={"1px solid #7aa7c7"}
-            onClick={() => Router.push('/register')}
-            _hover={{
-              bg: "#0074cc",
-            }}
-          >
-            Get Started
-          </Button>
+            {_.isEmpty(user) ? (
+              <>
+                <Button
+                  display={{ base: "none", md: "inline-flex" }}
+                  fontSize={"sm"}
+                  fontWeight={600}
+                  colorScheme="blue"
+                  variant="outline"
+                  onClick={() => Router.push(Routes.Main.Login.route)}
+                >
+                  Sign In
+                </Button>
+                <Button
+                  display={{ base: "none", md: "inline-flex" }}
+                  fontSize={"sm"}
+                  fontWeight={600}
+                  variant="solid"
+                  colorScheme="blue"
+                  onClick={() => Router.push(Routes.Main.Register.route)}
+                >
+                  Get Started
+                </Button>
+              </>
+            ) : (
+              <Flex alignItems={"center"}>
+                <Menu>
+                  <MenuButton
+                    as={Button}
+                    rounded={"full"}
+                    variant={"link"}
+                    cursor={"pointer"}
+                    minW={0}
+                  >
+                    <Avatar
+                      size={"sm"}
+                      src={
+                        "https://images.unsplash.com/photo-1493666438817-866a91353ca9?ixlib=rb-0.3.5&q=80&fm=jpg&crop=faces&fit=crop&h=200&w=200&s=b616b2c5b373a80ffc9636ba24f7a4a9"
+                      }
+                    />
+                  </MenuButton>
+                  <MenuList>
+                    <MenuItem onClick={() => Router.push(Routes.User.Mydetail.route)}>User details</MenuItem>
+                    <MenuItem onClick={() => Router.push(Routes.User.PostList.route)}>My Posts</MenuItem>
+                    <MenuDivider />
+                    <MenuItem onClick={logout}>Log Out</MenuItem>
+                  </MenuList>
+                </Menu>
+              </Flex>
+            )}
           </Stack>
         </Flex>
       </Flex>

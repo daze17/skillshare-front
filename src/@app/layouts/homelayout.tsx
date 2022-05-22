@@ -15,9 +15,9 @@ export default function MainLayout({ children }: { children: ReactNode }) {
       <Flex justifyContent={"center"}>
         <Box
           maxW={"1000px"}
-          paddingLeft={{ base: '20px', md: '50px', lg: '100px' }}
-          paddingRight={{ base: '20px', md: '50px', lg: '100px' }}
-        //   bg="blue"
+          paddingLeft={{ base: "20px", md: "50px", lg: "100px" }}
+          paddingRight={{ base: "20px", md: "50px", lg: "100px" }}
+          //   bg="blue"
         >
           {children}
         </Box>

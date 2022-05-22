@@ -28,7 +28,6 @@ const WYSIWYGEditor = ({ onChange, value }: any) => {
     setUpdated(true);
     setEditorState(editorState);
 
-    console.log(draftToHtml(convertToRaw(editorState.getCurrentContent())), "editorState")
     return onChange(draftToHtml(convertToRaw(editorState.getCurrentContent())));
     // return onChange(convertToRaw(editorState.getCurrentContent()));
   };
