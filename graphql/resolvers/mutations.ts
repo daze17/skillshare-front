@@ -73,5 +73,18 @@ export const addPostMutation = async (data: any, context: any) => {
     console.log(error);
   }
 };
-
+export const approvePostMutation = async (input: any) => {
+  try {
+    const { postId } = input;
+    await prisma.post.update({
+      where: {id: postId},
+      data: {
+        approved: true
+      },
+    });
+    return true;
+  } catch (error) {
+    console.log(error);
+  }
+};
 

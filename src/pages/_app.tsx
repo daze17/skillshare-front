@@ -24,9 +24,10 @@ function MyApp({
   return (
     <>
       <Head>
-        <title>here is title</title>
+        <title>{title}</title>
         <meta name="description" content="skill share" />
-        {/* <link rel="icon" href="/stackoverflowicon.png" /> */}
+        <Head>
+      </Head>
       </Head>
       <UserProvider user={user}>
         <ApolloProvider client={client}>

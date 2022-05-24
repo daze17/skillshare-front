@@ -3,15 +3,6 @@ import { gql } from "apollo-server-micro";
 export const typeDefs = gql`
   scalar Date
 
-  type Link {
-    id: String
-    title: String
-    description: String
-    url: String
-    category: String
-    imageUrl: String
-    users: [String]
-  }
   type Login {
     accessToken: String
     userRole: String
@@ -55,14 +46,20 @@ export const typeDefs = gql`
   input postListInput {
     approved: Boolean!
   }
+  input postDetailInput{
+    postId: String
+  }
+  
   type Mutation {
     addUser(input: UserInput): Boolean
     login(input: LoginInput): Login
     addPost(input: PostInput): Post
+    approvePost(input: postDetailInput): Boolean
   }
   type Query {
     me: User
     authorList: [User]
     postFullList(input: postListInput): [Post]
+    postDetail(input: postDetailInput): Post
   }
 `;

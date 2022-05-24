@@ -1,8 +1,11 @@
 import type { NextPage } from "next";
-import { Image, Button, Box, Flex, Text } from "@chakra-ui/react";
-import { Markup } from 'interweave';
+import { Image, Button, Box, Flex, Text, Heading, Tag } from "@chakra-ui/react";
+import { Markup } from "interweave";
+import { useRouter } from "next/router";
+import { useQuery } from "@apollo/client";
+import { POST_DETAIL } from "@app/utils/gql";
 
-const UserSummary = () => {
+const UserSummary = ({ postDetail }: any) => {
   return (
     <Flex justifyContent={"space-between"} marginBottom="30px">
       <Flex>
@@ -15,29 +18,37 @@ const UserSummary = () => {
         />
         <Box marginLeft="12px">
           <Flex>
-            <Text fontSize="16px">Name bnasdf</Text>
+            <Text fontSize="16px">{postDetail?.User?.name}</Text>
             <Button height="25px" marginLeft="12px" colorScheme={"green"}>
               Follow
             </Button>
           </Flex>
           <Text color="#757575" fontSize="#757575">
-            Jan 25 · 5 min read{" "}
+            {postDetail?.createdAt} · 5 min read{" "}
           </Text>
         </Box>
       </Flex>
-   
     </Flex>
   );
 };
 const PostDetail: NextPage = () => {
-  const test = `<p>fsadfdsaf<strong>fdsafsadf</strong></p>\n`;
+  const router = useRouter();
+  const { id } = router.query;
+  const { data, loading } = useQuery(POST_DETAIL, {
+    variables: { input: { postId: id } },
+  });
+  const postDetail = !loading ? data?.postDetail : {};
   return (
     <Box w={"650px"}>
-      <UserSummary />
-      <Image src={"/images/pfp.jpeg"} alt="pfp" />
+      <UserSummary postDetail={postDetail} />
       <Box>
-        {/* <td dangerouslySetInnerHTML={{ __html: test }} /> */}
-        <Markup content={test} />
+        <Heading>{postDetail?.title}</Heading>
+        <Box>
+        {postDetail?.tags?.map((tag: any, index: number) => (
+          <Tag key={index}>{tag}</Tag>
+          ))}
+          </Box>
+        <Markup content={postDetail?.description} />
       </Box>
     </Box>
   );

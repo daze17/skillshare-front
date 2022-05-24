@@ -77,3 +77,26 @@ export const POST_LIST = gql`
     }
   }
 `;
+
+export const POST_DETAIL = gql`
+  query PostDetail($input: postDetailInput) {
+    postDetail(input: $input) {
+      User {
+        name
+        email
+      }
+      id
+      title
+      tags
+      createdAt
+      approved
+      updatedAt
+      description
+    }
+  }
+`;
+export const APPROVE_POST = gql`
+  mutation APPROVE_POST($input: postDetailInput) {
+    approvePost(input: $input)
+  }
+`;

@@ -13,12 +13,10 @@ import {
 import { Formik, Form } from "formik";
 import Cookies from "js-cookie";
 import { config } from "@app/config";
-import { useQuery, useMutation, useApolloClient } from "@apollo/client";
-import { LINKS, LOGIN } from "@app/utils/gql";
+import { useMutation, useApolloClient } from "@apollo/client";
+import { LOGIN } from "@app/utils/gql";
 
 const Login: NextPage = () => {
-  const { data } = useQuery(LINKS);
-
   const apolloClient = useApolloClient();
   // Mutations
   const [loginMutation] = useMutation(LOGIN, {

@@ -17,7 +17,7 @@ const Home: NextPage = () => {
     <>
       <Flex justifyContent={"space-between"} alignItems={"center"}>
         <Flex alignItems={"center"}>
-          <Text>Tutorial number</Text>
+          <Text>Total number: {postFull?.postFullList?.length}</Text>
           <Button
             marginLeft={"50px"}
             onClick={() => Router.push(Routes.User.Addpost.route)}

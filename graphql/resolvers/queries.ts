@@ -40,7 +40,6 @@ export const postFullListQuery = async (input: any) => {
       updatedAt: true,
       description: true,
     };
-    console.log(input, "input");
     const { approved } = input;
     let list;
     if (approved) {
@@ -60,9 +59,34 @@ export const postFullListQuery = async (input: any) => {
         },
       });
     }
-
-    console.log(list, "list");
     return list;
+  } catch (error) {
+    console.log(error);
+  }
+};
+export const postDetailQuery = async (input: any) => {
+  try {
+    const data = {
+      id: true,
+      tags: true,
+      title: true,
+      approved: true,
+      createdAt: true,
+      updatedAt: true,
+      description: true,
+    };
+    const { postId } = input;
+    let post;
+    if (postId) {
+      post = await prisma.post.findUnique({
+        where: { id: postId },
+        select: {
+          User: true,
+          ...data,
+        },
+      });
+    }
+    return post;
   } catch (error) {
     console.log(error);
   }

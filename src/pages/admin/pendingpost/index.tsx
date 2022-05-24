@@ -20,19 +20,41 @@ import {
   Button,
   useDisclosure,
 } from "@chakra-ui/react";
-import { useQuery } from "@apollo/client";
-import { POST_LIST } from "@app/utils/gql";
+import { useQuery, useMutation } from "@apollo/client";
+import { POST_LIST, APPROVE_POST } from "@app/utils/gql";
 import moment from "moment";
 
 const AdminPendingPosts: NextPage = () => {
-  const { data: postFull } = useQuery(POST_LIST, {
+  const [postId, setPostId] = useState("");
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const { data: postFull, refetch } = useQuery(POST_LIST, {
     variables: {
       input: { approved: false },
     },
   });
-  const [approveModal, setApproveModal] = useState(false);
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const [approvePost] = useMutation(APPROVE_POST, {
+    fetchPolicy: "no-cache",
+    onCompleted: async () => {
+      refetch()
+      onClose()
+    },
+    onError: (error) => console.log(error, "login failed"),
+  });
 
+  const onConfirm = () => {
+    approvePost({
+      variables: {
+        input: {
+          postId: postId,
+        },
+      },
+    });
+  };
+
+  const modalClick = (data: any) => {
+    onOpen();
+    setPostId(data?.id);
+  };
   return (
     <>
       <TableContainer>
@@ -52,7 +74,7 @@ const AdminPendingPosts: NextPage = () => {
           </Thead>
           <Tbody>
             {postFull?.postFullList.map((data: any, index: number) => (
-              <Tr key={data.userid} onClick={onOpen}>
+              <Tr key={data.userid} onClick={() => modalClick(data)}>
                 <Td>{index + 1}</Td>
                 <Td>{data?.title}</Td>
                 <Td>{data?.User?.name}</Td>
@@ -87,7 +109,9 @@ const AdminPendingPosts: NextPage = () => {
             <Button colorScheme="blue" mr={3} onClick={onClose}>
               Close
             </Button>
-            <Button variant="ghost">Confirm</Button>
+            <Button variant="ghost" onClick={onConfirm}>
+              Confirm
+            </Button>
           </ModalFooter>
         </ModalContent>
       </Modal>
